@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/songsFragmentMenu"
+        android:enabled="true"
+        android:icon="@drawable/songs_fragment_nav_icon"
+        android:title="@string/titlesongsFragmentMenu"/>
+    <item
+        android:id="@+id/foldersFragmentMenu"
+        android:enabled="true"
+        android:icon="@drawable/folders_fragment_nav_icon"
+        android:title="@string/titlefoldersFragmentMenu"/>
+    <item
+        android:id="@+id/playlistFragmentMenu"
+        android:enabled="true"
+        android:icon="@drawable/playlist_fragment_nav_icon"
+        android:title="@string/titleplaylistFragmentMenu"/>
+
+</menu>
