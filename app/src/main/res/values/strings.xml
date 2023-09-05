@@ -3,4 +3,6 @@
     <string name="titlesongsFragmentMenu">Songs</string>
     <string name="titlefoldersFragmentMenu">Browse</string>
     <string name="titleplaylistFragmentMenu">Playlist</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
