@@ -1,12 +1,21 @@
 package com.example.materialmusicplayer2;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,7 +69,47 @@ public class TracksTabLayoutFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.fragment_tracks_tab_layout, container, false);
+        ListView tracksListView = view.findViewById(R.id.tracksListView);
+
+        ArrayList<File> mySongs = fetchSongs(Environment.getExternalStorageDirectory());
+        String[] items = new String[mySongs.size()];
+        for (int i = 0;i < mySongs.size();i++){
+            items[i] = mySongs.get(i).getName().replace(".mp3", "");
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.simple_list, items);
+        tracksListView.setAdapter(adapter);
+        tracksListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getContext(), PlaySong.class);
+                String currentSong = tracksListView.getItemAtPosition(position).toString();
+                intent.putExtra("SongList", mySongs);
+                intent.putExtra("CurrentSong", currentSong);
+                intent.putExtra("Position", position);
+
+                startActivity(intent);
+            }
+        });
 
         return view;
+    }
+
+    public ArrayList<File> fetchSongs(File file){
+        ArrayList arrayList = new ArrayList();
+        File[] songs = file.listFiles();
+        if (songs != null){
+            for (File myFile: songs){
+                if (!myFile.isHidden() && myFile.isDirectory()){
+                    arrayList.addAll(fetchSongs(myFile));
+                }
+                else{
+                    if (myFile.getName().endsWith(".mp3") && !myFile.getName().startsWith(".")){
+                        arrayList.add(myFile);
+                    }
+                }
+            }
+        }
+        Collections.sort(arrayList);
+        return arrayList;
     }
 }
