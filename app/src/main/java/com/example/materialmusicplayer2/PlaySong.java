@@ -40,6 +40,11 @@ public class PlaySong extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_song);
 
+        // hide the action bar
+        if (getSupportActionBar() != null){
+            getSupportActionBar().hide();
+        }
+
         textView = findViewById(R.id.textView);
         play = findViewById(R.id.play);
         previous = findViewById(R.id.previous);

@@ -22,6 +22,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // hide the action bar
+        if (getSupportActionBar() != null){
+            getSupportActionBar().hide();
+        }
+
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.READ_MEDIA_AUDIO)
                 .withListener(new PermissionListener() {
