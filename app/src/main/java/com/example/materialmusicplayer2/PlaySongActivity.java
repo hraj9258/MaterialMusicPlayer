@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.File;
 import java.util.ArrayList;
 
-public class PlaySong extends AppCompatActivity {
+public class PlaySongActivity extends AppCompatActivity {
     private TextView textView;
     private ImageView play,previous,next,mediaArt;
     ArrayList<File> songs;

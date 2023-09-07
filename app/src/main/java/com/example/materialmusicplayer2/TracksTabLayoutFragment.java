@@ -81,7 +81,7 @@ public class TracksTabLayoutFragment extends Fragment {
         tracksListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getContext(), PlaySong.class);
+                Intent intent = new Intent(getContext(), PlaySongActivity.class);
                 String currentSong = tracksListView.getItemAtPosition(position).toString();
                 intent.putExtra("SongList", mySongs);
                 intent.putExtra("CurrentSong", currentSong);
@@ -103,7 +103,7 @@ public class TracksTabLayoutFragment extends Fragment {
                     arrayList.addAll(fetchSongs(myFile));
                 }
                 else{
-                    if (myFile.getName().endsWith(".mp3") && !myFile.getName().startsWith(".")){
+                    if ((myFile.getName().endsWith(".mp3") || myFile.getName().endsWith(".opus")) && !myFile.getName().startsWith(".")){
                         arrayList.add(myFile);
                     }
                 }
