@@ -1,12 +1,22 @@
 package com.example.materialmusicplayer2;
 
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +69,63 @@ public class ArtistsTabLayoutFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_artists_tab_layout, container, false);
+        View view = inflater.inflate(R.layout.fragment_artists_tab_layout, container, false);
+        ListView artistsListView = view.findViewById(R.id.artistsListView);
+
+        ArrayList<File> mySongs = fetchSongs(Environment.getExternalStorageDirectory());
+        Uri uri = Uri.parse(mySongs.toString());
+
+        ArrayList<String> artistNames = getArtistNamesFromMP3Files(mySongs);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),R.layout.simple_list, artistNames);
+        artistsListView.setAdapter(adapter);
+
+
+        return view;
+
+    }
+
+    public ArrayList<String> getArtistNamesFromMP3Files(ArrayList<File> mp3Files) {
+        ArrayList<String> artistNames = new ArrayList<>();
+
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+
+        for (File mp3File : mp3Files) {
+            try {
+                retriever.setDataSource(mp3File.getAbsolutePath());
+                String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+                artistNames.add(artist != null ? artist : "Unknown");
+            } catch (Exception e) {
+                // Handle exceptions or errors when processing the file
+                e.printStackTrace();
+                artistNames.add("Unknown");
+            }
+        }
+
+        try {
+            retriever.release();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return artistNames;
+    }
+
+    public ArrayList<File> fetchSongs(File file){
+        ArrayList arrayList = new ArrayList();
+        File[] songs = file.listFiles();
+        if (songs != null){
+            for (File myFile: songs){
+                if (!myFile.isHidden() && myFile.isDirectory()){
+                    arrayList.addAll(fetchSongs(myFile));
+                }
+                else{
+                    if ((myFile.getName().endsWith(".mp3") || myFile.getName().endsWith(".opus")) && !myFile.getName().startsWith(".")){
+                        arrayList.add(myFile);
+                    }
+                }
+            }
+        }
+        Collections.sort(arrayList);
+        return arrayList;
     }
 }
