@@ -15,15 +15,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.google.android.material.search.SearchView;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -91,7 +88,7 @@ public class SongsFragment extends Fragment {
         EditText editText = searchView.getEditText();
 
         // alphabetically sorted arraylist of all songs
-        ArrayList<File> mySongs = fetchSongs(Environment.getExternalStorageDirectory());
+        ArrayList<File> mySongs = MainActivity.fetchSongs(Environment.getExternalStorageDirectory());
         String[] items = new String[mySongs.size()]; // string array containing names of all songs
         for (int i = 0;i < mySongs.size();i++){
             items[i] = mySongs.get(i).getName().replace(".mp3", "");
@@ -147,24 +144,5 @@ public class SongsFragment extends Fragment {
         // Update the ListView with the filtered results
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.simple_list, filteredSongs);
         listView.setAdapter(adapter);
-    }
-
-    public ArrayList<File> fetchSongs(File file){
-        ArrayList arrayList = new ArrayList();
-        File[] songs = file.listFiles();
-        if (songs != null){
-            for (File myFile: songs){
-                if (!myFile.isHidden() && myFile.isDirectory()){
-                    arrayList.addAll(fetchSongs(myFile));
-                }
-                else{
-                    if ((myFile.getName().endsWith(".mp3") || myFile.getName().endsWith(".opus")) && !myFile.getName().startsWith(".")){
-                        arrayList.add(myFile);
-                    }
-                }
-            }
-        }
-        Collections.sort(arrayList);
-        return arrayList;
     }
 }

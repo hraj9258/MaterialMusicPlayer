@@ -1,7 +1,6 @@
 package com.example.materialmusicplayer2;
 
 import android.media.MediaMetadataRetriever;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,7 +15,6 @@ import android.widget.ListView;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,9 +70,7 @@ public class ArtistsTabLayoutFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_artists_tab_layout, container, false);
         ListView artistsListView = view.findViewById(R.id.artistsListView);
 
-        ArrayList<File> mySongs = fetchSongs(Environment.getExternalStorageDirectory());
-        Uri uri = Uri.parse(mySongs.toString());
-
+        ArrayList<File> mySongs = MainActivity.fetchSongs(Environment.getExternalStorageDirectory());
         ArrayList<String> artistNames = getArtistNamesFromMP3Files(mySongs);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),R.layout.simple_list, artistNames);
         artistsListView.setAdapter(adapter);
@@ -108,24 +104,5 @@ public class ArtistsTabLayoutFragment extends Fragment {
         }
 
         return artistNames;
-    }
-
-    public ArrayList<File> fetchSongs(File file){
-        ArrayList arrayList = new ArrayList();
-        File[] songs = file.listFiles();
-        if (songs != null){
-            for (File myFile: songs){
-                if (!myFile.isHidden() && myFile.isDirectory()){
-                    arrayList.addAll(fetchSongs(myFile));
-                }
-                else{
-                    if ((myFile.getName().endsWith(".mp3") || myFile.getName().endsWith(".opus")) && !myFile.getName().startsWith(".")){
-                        arrayList.add(myFile);
-                    }
-                }
-            }
-        }
-        Collections.sort(arrayList);
-        return arrayList;
     }
 }

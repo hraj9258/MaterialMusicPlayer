@@ -15,7 +15,6 @@ import android.widget.ListView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -71,7 +70,7 @@ public class TracksTabLayoutFragment extends Fragment {
         View view =inflater.inflate(R.layout.fragment_tracks_tab_layout, container, false);
         ListView tracksListView = view.findViewById(R.id.tracksListView);
 
-        ArrayList<File> mySongs = fetchSongs(Environment.getExternalStorageDirectory());
+        ArrayList<File> mySongs = MainActivity.fetchSongs(Environment.getExternalStorageDirectory());
         String[] items = new String[mySongs.size()];
         for (int i = 0;i < mySongs.size();i++){
             items[i] = mySongs.get(i).getName().replace(".mp3", "");
@@ -92,24 +91,5 @@ public class TracksTabLayoutFragment extends Fragment {
         });
 
         return view;
-    }
-
-    public ArrayList<File> fetchSongs(File file){
-        ArrayList arrayList = new ArrayList();
-        File[] songs = file.listFiles();
-        if (songs != null){
-            for (File myFile: songs){
-                if (!myFile.isHidden() && myFile.isDirectory()){
-                    arrayList.addAll(fetchSongs(myFile));
-                }
-                else{
-                    if ((myFile.getName().endsWith(".mp3") || myFile.getName().endsWith(".opus")) && !myFile.getName().startsWith(".")){
-                        arrayList.add(myFile);
-                    }
-                }
-            }
-        }
-        Collections.sort(arrayList);
-        return arrayList;
     }
 }

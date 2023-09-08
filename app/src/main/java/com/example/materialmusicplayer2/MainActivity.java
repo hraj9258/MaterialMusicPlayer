@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.karumi.dexter.Dexter;
@@ -15,7 +16,12 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class MainActivity extends AppCompatActivity {
+    private String permission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +33,14 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permission = Manifest.permission.READ_MEDIA_AUDIO;
+        }
+        else
+            permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+
         Dexter.withContext(this)
-                .withPermission(Manifest.permission.READ_MEDIA_AUDIO)
+                .withPermission(permission)
                 .withListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
@@ -59,5 +71,25 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.add(R.id.framelayout, fragment);
         }
         fragmentTransaction.commit();
+    }
+
+    // Fetch Songs
+    public static ArrayList<File> fetchSongs(File file){
+        ArrayList arrayList = new ArrayList();
+        File[] songs = file.listFiles();
+        if (songs != null){
+            for (File myFile: songs){
+                if (!myFile.isHidden() && myFile.isDirectory()){
+                    arrayList.addAll(fetchSongs(myFile));
+                }
+                else{
+                    if ((myFile.getName().endsWith(".mp3") || myFile.getName().endsWith(".opus")) && !myFile.getName().startsWith(".")){
+                        arrayList.add(myFile);
+                    }
+                }
+            }
+        }
+        Collections.sort(arrayList);
+        return arrayList;
     }
 }
