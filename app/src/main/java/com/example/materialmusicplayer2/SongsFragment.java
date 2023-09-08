@@ -1,14 +1,30 @@
 package com.example.materialmusicplayer2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.os.Environment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ScrollView;
+import android.widget.Toast;
 
+import com.google.android.material.search.SearchView;
 import com.google.android.material.tabs.TabLayout;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,10 +82,89 @@ public class SongsFragment extends Fragment {
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
         ViewPager viewPager = view.findViewById(R.id.viewPager);
 
+        // search suggestions views
+        SearchView searchView = view.findViewById(R.id.searchViewSongs);
+        ListView listView = view.findViewById(R.id.scrollViewSuggestions);
+
+
+        // hack extracting the textview from the search view( please change it to native implementation of search view in future)
+        EditText editText = searchView.getEditText();
+
+        // alphabetically sorted arraylist of all songs
+        ArrayList<File> mySongs = fetchSongs(Environment.getExternalStorageDirectory());
+        String[] items = new String[mySongs.size()]; // string array containing names of all songs
+        for (int i = 0;i < mySongs.size();i++){
+            items[i] = mySongs.get(i).getName().replace(".mp3", "");
+        }
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterSongs(s.toString(), listView, items);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        // click listeners for the listview results
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getContext(), PlaySongActivity.class);
+                String currentSong = listView.getItemAtPosition(position).toString();
+                intent.putExtra("SongList", mySongs);
+                intent.putExtra("CurrentSong", currentSong);
+                intent.putExtra("Position", position);
+                startActivity(intent);
+
+            }
+        });
+
+        // tab layout and view pager
         ViewPagerSongsAdapter viewPagerSongsAdapter = new ViewPagerSongsAdapter(getChildFragmentManager());
         viewPager.setAdapter(viewPagerSongsAdapter);
 
         tabLayout.setupWithViewPager(viewPager);
         return view;
+    }
+
+    private void filterSongs(String query, ListView listView, String[] allSongs) {
+        List<String> filteredSongs = new ArrayList<>();
+
+        for (String song : allSongs) {
+            if (song.toLowerCase().contains(query.toLowerCase())) {
+                filteredSongs.add(song);
+            }
+        }
+
+        // Update the ListView with the filtered results
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.simple_list, filteredSongs);
+        listView.setAdapter(adapter);
+    }
+
+    public ArrayList<File> fetchSongs(File file){
+        ArrayList arrayList = new ArrayList();
+        File[] songs = file.listFiles();
+        if (songs != null){
+            for (File myFile: songs){
+                if (!myFile.isHidden() && myFile.isDirectory()){
+                    arrayList.addAll(fetchSongs(myFile));
+                }
+                else{
+                    if ((myFile.getName().endsWith(".mp3") || myFile.getName().endsWith(".opus")) && !myFile.getName().startsWith(".")){
+                        arrayList.add(myFile);
+                    }
+                }
+            }
+        }
+        Collections.sort(arrayList);
+        return arrayList;
     }
 }
