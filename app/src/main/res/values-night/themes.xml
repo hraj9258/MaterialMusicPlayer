@@ -3,5 +3,6 @@
     <style name="Base.Theme.MaterialMusicPlayer2" parent="Theme.Material3.DynamicColors.Dark">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="android:statusBarColor">@color/material_dynamic_secondary40</item>
     </style>
 </resources>
