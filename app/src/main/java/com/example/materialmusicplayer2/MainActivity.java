@@ -5,23 +5,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.Manifest;
-import android.os.Build;
 import android.os.Bundle;
-
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
-    private String permission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,31 +23,7 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permission = Manifest.permission.READ_MEDIA_AUDIO;
-        }
-        else
-            permission = Manifest.permission.READ_EXTERNAL_STORAGE;
-
-        Dexter.withContext(this)
-                .withPermission(permission)
-                .withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                        loadFragment(new SongsFragment(),false);
-                    }
-
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-                        permissionToken.continuePermissionRequest();
-                    }
-                })
-                .check();
+        loadFragment(new SongsFragment(),false);
 
     }
 
