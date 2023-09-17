@@ -2,8 +2,10 @@ package com.example.materialmusicplayer2;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Environment;
 import android.text.Editable;
@@ -18,74 +20,35 @@ import android.widget.ListView;
 
 import com.google.android.material.search.SearchView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SongsFragment#newInstance} factory method to
- * create an instance of this fragment.
- *
- */
 public class SongsFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SongsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SongsFragment newInstance(String param1, String param2) {
-        SongsFragment fragment = new SongsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    TabLayout tabLayout;
+    ViewPager2SongsAdapter viewPager2SongsAdapter;
+    ViewPager2 viewPager2Songs;
 
     public SongsFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_songs, container, false);
-        TabLayout tabLayout = view.findViewById(R.id.tabLayout);
-        ViewPager viewPager = view.findViewById(R.id.viewPager);
+        View view = inflater.inflate(R.layout.fragment_songs, container, false);// Inflate the layout for this fragment
+        tabLayout = view.findViewById(R.id.tabLayout);
+        viewPager2Songs = view.findViewById(R.id.viewPager2Songs);
 
         // search suggestions views
         SearchView searchView = view.findViewById(R.id.searchViewSongs);
-        ListView listView = view.findViewById(R.id.scrollViewSuggestions);
+        ListView scrollViewSuggestions = view.findViewById(R.id.scrollViewSuggestions);
 
 
-        // hack extracting the textview from the search view( please change it to native implementation of search view in future)
-        EditText editText = searchView.getEditText();
+        // hack: extracting the textview from the search view( please change it to native implementation of search view in future)
+        EditText searchText = searchView.getEditText();
 
         // alphabetically sorted arraylist of all songs
         ArrayList<File> mySongs = MainActivity.fetchSongs(Environment.getExternalStorageDirectory());
@@ -93,7 +56,7 @@ public class SongsFragment extends Fragment {
         for (int i = 0;i < mySongs.size();i++){
             items[i] = mySongs.get(i).getName().replace(".mp3", "");
         }
-        editText.addTextChangedListener(new TextWatcher() {
+        searchText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -101,7 +64,7 @@ public class SongsFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterSongs(s.toString(), listView, items);
+                filterSongs(s.toString(), scrollViewSuggestions, items);
             }
 
             @Override
@@ -111,11 +74,11 @@ public class SongsFragment extends Fragment {
         });
 
         // click listeners for the listview results
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        scrollViewSuggestions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getContext(), PlaySongActivity.class);
-                String currentSong = listView.getItemAtPosition(position).toString();
+                String currentSong = scrollViewSuggestions.getItemAtPosition(position).toString();
                 intent.putExtra("SongList", mySongs);
                 intent.putExtra("CurrentSong", currentSong);
                 intent.putExtra("Position", position);
@@ -124,11 +87,29 @@ public class SongsFragment extends Fragment {
             }
         });
 
-        // tab layout and view pager
-        ViewPagerSongsAdapter viewPagerSongsAdapter = new ViewPagerSongsAdapter(getChildFragmentManager());
-        viewPager.setAdapter(viewPagerSongsAdapter);
+        // tab layout and view pager2
+        viewPager2SongsAdapter = new ViewPager2SongsAdapter(getChildFragmentManager(), getLifecycle());
+        viewPager2SongsAdapter.addFragment(new TracksTabLayoutFragment());
+        viewPager2SongsAdapter.addFragment(new ArtistsTabLayoutFragment());
+        viewPager2SongsAdapter.addFragment(new GenresTabLayoutFragment());
 
-        tabLayout.setupWithViewPager(viewPager);
+        viewPager2Songs.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        viewPager2Songs.setAdapter(viewPager2SongsAdapter);
+
+
+        new TabLayoutMediator(tabLayout, viewPager2Songs, new TabLayoutMediator.TabConfigurationStrategy() {
+            @Override
+            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                if(position == 0){
+                    tab.setText("Tracks");
+                }
+                else if(position == 1){
+                    tab.setText("Artists");
+                }else{
+                    tab.setText("Genres");
+                }
+            }
+        }).attach();
         return view;
     }
 
