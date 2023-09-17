@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class PlaySongActivity extends AppCompatActivity {
+    MediaMetadataRetriever mediaMetadataRetriever ;
     TextView songName, artistName, currentTime, totalTime;
     private Button play;
     private ImageView mediaArt;
@@ -74,7 +75,7 @@ public class PlaySongActivity extends AppCompatActivity {
 
 
         // Initial Setup
-        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+        mediaMetadataRetriever = new MediaMetadataRetriever();
         mediaMetadataRetriever.setDataSource(this, uri);
         byte[] artBytes = mediaMetadataRetriever.getEmbeddedPicture();
 
@@ -238,6 +239,7 @@ public class PlaySongActivity extends AppCompatActivity {
         seekBar.setProgress(mediaPlayer.getCurrentPosition()); // reset the seekbar
         textContent = songs.get(position).getName(); // current song name
         songName.setText(textContent);
+        artistName.setText(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
         totalTime.setText(convertToMMSS(String.valueOf(mediaPlayer.getDuration())));
     }
 
