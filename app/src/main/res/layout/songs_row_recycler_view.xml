@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="5dp"
+    android:paddingEnd="5dp"
+    android:id="@+id/songsRow">
+
+        <ImageView
+            android:id="@+id/albumArtRecyclerViewRow"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/twotone_music_note_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/album_art" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/menuMoreRecyclerViewRow"
+            app:layout_constraintStart_toEndOf="@+id/albumArtRecyclerViewRow"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/songNameRecyclerViewRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/baloo_bhai_2_semibold"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:singleLine="true"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/artistNameRecyclerViewRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/menuMoreRecyclerViewRow"
+            android:layout_width="22dp"
+            android:layout_height="42dp"
+            android:src="@drawable/baseline_more_vert_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/more_options" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
