@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     tools:context=".ArtistsTabLayoutFragment">
 
-    <ListView
-        android:id="@+id/artistsListView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/artistsRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"/>
 </FrameLayout>

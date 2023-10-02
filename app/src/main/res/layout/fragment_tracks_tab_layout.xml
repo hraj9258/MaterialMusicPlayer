@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     tools:context=".TracksTabLayoutFragment">
 
-    <ListView
-        android:id="@+id/tracksListView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tracksRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
 </FrameLayout>
