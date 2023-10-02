@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace = "com.example.materialmusicplayer2"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.materialmusicplayer2"
         minSdk = 31
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
