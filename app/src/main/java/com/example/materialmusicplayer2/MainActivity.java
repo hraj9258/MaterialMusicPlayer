@@ -6,12 +6,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.os.Environment;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static ArrayList<File> mySongs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +26,17 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
+        // ArrayList<File> of all the songs in internal storage
+        mySongs = MainActivity.fetchSongs(Environment.getExternalStorageDirectory());
+
+        // Load the Songs fragment by default
         loadFragment(new SongsFragment(),false);
 
     }
-
+    /**
+     * @param fragment Fragment you want to load
+     * @param isReplace Weather to Replace the fragment or add a fragment when loading
+     **/
     public void loadFragment(Fragment fragment, boolean isReplace){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -39,9 +49,12 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    // Fetch Songs
+    /**
+     *  @param file Object of File class
+     *  @return a sorted ArrayList<File> containing all the songs wit
+     **/
     public static ArrayList<File> fetchSongs(File file){
-        ArrayList arrayList = new ArrayList();
+        ArrayList<File> arrayList = new ArrayList<>();
         File[] songs = file.listFiles();
         if (songs != null){
             for (File myFile: songs){
