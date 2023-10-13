@@ -1,5 +1,7 @@
 package com.example.materialmusicplayer2;
 
+import static com.example.materialmusicplayer2.MainActivity.mySongs;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,39 +10,32 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 
-import com.google.android.material.chip.Chip;
-
-import java.io.File;
-import java.util.ArrayList;
+import com.google.android.material.button.MaterialButton;
 import java.util.concurrent.TimeUnit;
 
 public class PlaySongActivity extends AppCompatActivity {
-    MediaMetadataRetriever mediaMetadataRetriever ;
-    TextView songName, artistName, currentTime, totalTime;
-    private Button play;
+    private MediaMetadataRetriever mediaMetadataRetriever ;
+    private TextView songName, artistName, currentTime, totalTime;
+    private MaterialButton play,previous,next,shuffle,repeat;
     private ImageView mediaArt;
-    ArrayList<File> songs;
-    MediaPlayer mediaPlayer;
-    String textContent;
+    private MediaPlayer mediaPlayer;
     int position;
-    SeekBar seekBar;
-    Thread updateseekBar;
-    Boolean isRepeat = false;
+    private SeekBar seekBar;
+    private Thread updateSeekBar;
+    private Boolean isRepeat = false;
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mediaPlayer.stop();
         mediaPlayer.release();
-        updateseekBar.interrupt();
+        updateSeekBar.interrupt();
     }
 
     @Override
@@ -53,24 +48,12 @@ public class PlaySongActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        songName = findViewById(R.id.songName);
-        artistName = findViewById(R.id.artistName);
-        play = findViewById(R.id.play);
-        Button previous = findViewById(R.id.previous);
-        Button next = findViewById(R.id.next);
-        seekBar = findViewById(R.id.seekBar);
-        mediaArt = findViewById(R.id.albumArt);
-        currentTime = findViewById(R.id.currentTime);
-        totalTime = findViewById(R.id.totalTime);
-        Chip shuffle = findViewById(R.id.shuffle);
-        Chip repeat = findViewById(R.id.repeat);
+        // Find Views for all the objects
+        findViewsPlaySongsActivity();
 
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        songs =(ArrayList)bundle.getParcelableArrayList("SongList");
-        textContent = intent.getStringExtra("CurrentSong");
         position = intent.getIntExtra("Position", 0);
-        Uri uri = Uri.parse(songs.get(position).toString());
+        Uri uri = Uri.parse(mySongs.get(position).toString());
         mediaPlayer = MediaPlayer.create(this, uri);
 
 
@@ -86,11 +69,10 @@ public class PlaySongActivity extends AppCompatActivity {
         } else {
             mediaArt.setImageResource(R.drawable.twotone_music_note_24);
         }
-        songName.setText(textContent);
+        songName.setText(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE));
         songName.setSelected(true);
         artistName.setText(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
         totalTime.setText(convertToMMSS((String.valueOf(mediaPlayer.getDuration()))));
-
 
         // media Player Started
         mediaPlayer.start();
@@ -98,15 +80,14 @@ public class PlaySongActivity extends AppCompatActivity {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
+                mediaPlayer.pause();
                 if (isRepeat){
-                    mediaPlayer.pause();
                     mediaPlayer.seekTo(0);
-                    seekBar.setProgress(mediaPlayer.getCurrentPosition()); // reset the seekbar
                     mediaPlayer.start();
+                    seekBar.setProgress(mediaPlayer.getCurrentPosition()); // reset the seekbar
                 }
                 else{
-                    mediaPlayer.stop();
-                    if (position != songs.size() - 1 ){
+                    if (position != mySongs.size() - 1 ){
                         position = position + 1;
                     }
                     else{
@@ -134,12 +115,12 @@ public class PlaySongActivity extends AppCompatActivity {
             }
         });
 
-        updateseekBar = new Thread(){
+        updateSeekBar = new Thread(){
             @Override
             public void run() {
                 int currentPosition = 0;
                 try {
-                    while (currentPosition<mediaPlayer.getDuration()){
+                    while (currentPosition <= mediaPlayer.getDuration()){
                         currentPosition = mediaPlayer.getCurrentPosition();
                         seekBar.setProgress(currentPosition);
                         runOnUiThread(new Runnable() {
@@ -148,7 +129,7 @@ public class PlaySongActivity extends AppCompatActivity {
                                 currentTime.setText(convertToMMSS(String.valueOf(mediaPlayer.getCurrentPosition())));
                             }
                         });
-                        sleep(800);
+                        sleep(500);
                     }
                 }
                 catch (Exception e){
@@ -156,24 +137,21 @@ public class PlaySongActivity extends AppCompatActivity {
                 }
             }
         };
-        updateseekBar.start();
+        updateSeekBar.start();
 
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mediaPlayer.isPlaying()){
-                    play.setBackgroundResource(R.drawable.play);
+                    play.setIcon(AppCompatResources.getDrawable(PlaySongActivity.this,R.drawable.play));
                     mediaPlayer.pause();
                 }
                 else{
-                    play.setBackgroundResource(R.drawable.pause);
+                    play.setIcon(AppCompatResources.getDrawable(PlaySongActivity.this,R.drawable.pause));
                     mediaPlayer.start();
                 }
             }
         });
-
-
-
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,7 +160,7 @@ public class PlaySongActivity extends AppCompatActivity {
                     position = position-1;
                 }
                 else{
-                    position = songs.size() - 1 ;
+                    position = mySongs.size() - 1 ;
                 }
                 songsChange(mediaMetadataRetriever,uri);
             }
@@ -191,7 +169,7 @@ public class PlaySongActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mediaPlayer.stop();
-                if (position != songs.size() - 1 ){
+                if (position != mySongs.size() - 1 ){
                     position = position + 1;
                 }
                 else{
@@ -201,22 +179,19 @@ public class PlaySongActivity extends AppCompatActivity {
             }
 
         });
-
-        repeat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        repeat.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isRepeat){
-                    isRepeat = false;
+            public void onClick(View view) {
+                if(isRepeat){
+                    isRepeat=false;
                 }
-                else{
-                    isRepeat=true;
-                }
+                else isRepeat = true;
             }
         });
     }
 
     public void songsChange(MediaMetadataRetriever mmr, Uri uri){
-        uri = Uri.parse(songs.get(position).toString());
+        uri = Uri.parse(mySongs.get(position).toString());
         mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
         mediaPlayer.start();
 
@@ -233,14 +208,13 @@ public class PlaySongActivity extends AppCompatActivity {
         }
 
         // update the play button icons
-        play.setBackgroundResource(R.drawable.pause);
+        play.setIcon(AppCompatResources.getDrawable(PlaySongActivity.this,R.drawable.pause));
 
         seekBar.setMax(mediaPlayer.getDuration());
         seekBar.setProgress(mediaPlayer.getCurrentPosition()); // reset the seekbar
-        textContent = songs.get(position).getName(); // current song name
-        songName.setText(textContent);
-        artistName.setText(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
-        totalTime.setText(convertToMMSS(String.valueOf(mediaPlayer.getDuration())));
+        songName.setText(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)); // current song name
+        artistName.setText(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)); // current Artist name
+        totalTime.setText(convertToMMSS(String.valueOf(mediaPlayer.getDuration()))); // Total time of the song
     }
 
     public String convertToMMSS(String duration){
@@ -249,5 +223,19 @@ public class PlaySongActivity extends AppCompatActivity {
         return String.format("%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
                 TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1));
+    }
+
+    public void findViewsPlaySongsActivity(){
+        songName = findViewById(R.id.songName);
+        artistName = findViewById(R.id.artistName);
+        play = findViewById(R.id.play);
+        previous = findViewById(R.id.previous);
+        next = findViewById(R.id.next);
+        seekBar = findViewById(R.id.seekBar);
+        mediaArt = findViewById(R.id.albumArt);
+        currentTime = findViewById(R.id.currentTime);
+        totalTime = findViewById(R.id.totalTime);
+        shuffle = findViewById(R.id.shuffle);
+        repeat = findViewById(R.id.repeat);
     }
 }
