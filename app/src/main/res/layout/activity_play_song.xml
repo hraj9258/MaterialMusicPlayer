@@ -108,50 +108,60 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
+            android:gravity="center_horizontal|center_vertical"
             android:orientation="horizontal">
 
-            <com.google.android.material.chip.Chip
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/shuffle"
+                style="?attr/materialIconButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/shuffle_button"
                 android:checkable="true"
-                app:chipIcon="@drawable/baseline_shuffle_24" />
-            <Button
+                app:icon="@drawable/baseline_shuffle_24" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/previous"
                 style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/previous_button"
                 app:icon="@drawable/previous"
                 app:iconGravity="textStart"
                 app:iconSize="34dp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/play"
                 style="@style/Widget.Material3.Button.IconButton.Filled"
                 android:layout_width="65dp"
                 android:layout_height="wrap_content"
-                android:paddingTop="18dp"
-                android:paddingBottom="18dp"
-                android:background="@drawable/pause"
+                android:contentDescription="@string/play_button"
+                android:paddingLeft="25dp"
+                android:paddingTop="10dp"
+                android:paddingRight="25dp"
+                android:paddingBottom="10dp"
+                app:icon="@drawable/pause"
                 app:iconGravity="textStart"
                 app:iconSize="34dp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/next"
                 style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/next_button"
                 app:icon="@drawable/next"
                 app:iconGravity="textStart"
                 app:iconSize="34dp" />
 
-            <com.google.android.material.chip.Chip
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/repeat"
+                style="?attr/materialIconButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/repeat_button"
                 android:checkable="true"
-                app:chipIcon="@drawable/baseline_repeat_24" />
+                app:icon="@drawable/baseline_repeat_24" />
 
         </LinearLayout>
     </LinearLayout>
