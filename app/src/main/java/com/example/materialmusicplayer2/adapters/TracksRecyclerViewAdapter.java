@@ -59,9 +59,6 @@ public class TracksRecyclerViewAdapter extends RecyclerView.Adapter<TracksRecycl
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, PlaySongActivity.class);
-                String currentSong = songsName.get(holder.getAdapterPosition());
-                intent.putExtra("SongList", mySongs);
-                intent.putExtra("CurrentSong", currentSong);
                 intent.putExtra("Position", holder.getAdapterPosition());
                 context.startActivity(intent);
             }
