@@ -1,4 +1,4 @@
-package com.hraj9258.musicplayer.core.navigation
+package com.hraj9258.musicplayer.navigation
 
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane

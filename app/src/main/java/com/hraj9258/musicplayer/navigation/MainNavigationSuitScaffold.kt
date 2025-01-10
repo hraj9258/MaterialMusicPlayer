@@ -1,4 +1,4 @@
-package com.hraj9258.musicplayer.core.navigation
+package com.hraj9258.musicplayer.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
