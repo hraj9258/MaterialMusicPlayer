@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">MaterialMusicPlayer2</string>
-    <string name="titlesongsFragmentMenu">Songs</string>
-    <string name="titlefoldersFragmentMenu">Browse</string>
-    <string name="titleplaylistFragmentMenu">Playlist</string>
+    <string name="app_name">M Music Player</string>
+    <string name="titleSongsFragmentMenu">Songs</string>
+    <string name="titleFoldersFragmentMenu">Browse</string>
+    <string name="titlePlayListFragmentMenu">Playlist</string>
     <string name="searchbar_hint">Search Songs</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="album_art">Album Art</string>
@@ -16,4 +16,8 @@
     <string name="shuffle_button">Shuffle Music</string>
     <string name="next_button">Next Music</string>
     <string name="repeat_button">Repeat Music</string>
+    <string name="title_activity_song">SongActivity</string>
+    <string name="musicList">Music</string>
+    <string name="browseMusic">Browse</string>
+    <string name="settings">Settings</string>
 </resources>
