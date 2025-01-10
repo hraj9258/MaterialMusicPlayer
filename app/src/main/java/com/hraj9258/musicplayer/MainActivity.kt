@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.hraj9258.musicplayer.core.navigation.MainNavigationSuitScaffold
-import com.hraj9258.musicplayer.ui.theme.MusicPlayerTheme
+import com.hraj9258.musicplayer.core.presentation.ui.theme.MusicPlayerTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
