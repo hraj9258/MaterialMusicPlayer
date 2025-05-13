@@ -1,4 +1,4 @@
-package com.hraj9258.musicplayer.music.presentation
+package com.hraj9258.musicplayer.core.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
