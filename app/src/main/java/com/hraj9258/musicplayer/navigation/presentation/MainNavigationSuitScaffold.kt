@@ -1,4 +1,4 @@
-package com.hraj9258.musicplayer.navigation
+package com.hraj9258.musicplayer.navigation.presentation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -13,8 +13,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.hraj9258.musicplayer.music.presentation.NotYetImplemented
 import com.hraj9258.musicplayer.core.presentation.NotYetImplemented
+import com.hraj9258.musicplayer.navigation.domain.AppDestinations
+import com.hraj9258.musicplayer.navigation.presentation.components.AdaptiveMusicListPlayerPane
 
 @Composable
 fun MainNavigationSuitScaffold(

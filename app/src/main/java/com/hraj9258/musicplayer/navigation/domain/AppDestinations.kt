@@ -1,4 +1,4 @@
-package com.hraj9258.musicplayer.navigation
+package com.hraj9258.musicplayer.navigation.domain
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
