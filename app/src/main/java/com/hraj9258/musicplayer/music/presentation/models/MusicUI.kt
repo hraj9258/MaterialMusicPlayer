@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import com.hraj9258.musicplayer.music.domain.Music
+import androidx.core.net.toUri
 
 data class MusicUI(
     val album: String,
@@ -23,11 +24,11 @@ data class MusicUI(
 fun Music.toMusicUI(): MusicUI{
     return MusicUI(
         album = album,
-        albumArt = getAlbumArt(path),
+        albumArt = albumArt?.asImageBitmap(),
         artist = artist,
         duration = duration.toString(),
         id = id,
-        path = Uri.parse(path),
+        path = path.toUri(),
         title = title
     )
 }

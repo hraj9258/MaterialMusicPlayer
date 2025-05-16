@@ -1,15 +1,18 @@
 package com.hraj9258.musicplayer.music.data
 
+import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
+import android.graphics.Bitmap
 import android.provider.MediaStore
+import android.util.Size
 import com.hraj9258.musicplayer.music.domain.Music
 import com.hraj9258.musicplayer.music.domain.MusicDataSource
 
 class LocalMusicDataSource(
-    val context: Context,
+    private val context: Context,
 ) : MusicDataSource {
-    internal val localMusicSortPreference = "SortOrder"
+    private val localMusicSortPreference = "SortOrder"
 
     override suspend fun getMusicList(): List<Music> {
         // ToDo: Implement Sorting
@@ -19,7 +22,7 @@ class LocalMusicDataSource(
             .getString(localMusicSortPreference, "sortByName")
         val sortOrder = MediaStore.MediaColumns.DISPLAY_NAME + " ASC"
 
-
+        val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.ALBUM,
@@ -29,9 +32,7 @@ class LocalMusicDataSource(
             MediaStore.Audio.Media.DATA,
             MediaStore.MediaColumns.DISPLAY_NAME
         )
-        val cursor: Cursor? = context.contentResolver.query(
-            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null, sortOrder
-        )
+        val cursor: Cursor? = context.contentResolver.query(uri, projection, null, null, sortOrder)
 
         val musicList = mutableListOf<Music>()
         if (cursor != null) {
@@ -47,8 +48,23 @@ class LocalMusicDataSource(
                     cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA))
                 val title =
                     cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE))
+
+                val perItemUri = ContentUris.withAppendedId(uri, id)
+
+                var thumbnail: Bitmap? = null
+
+                try {
+                    thumbnail = context.contentResolver.loadThumbnail(
+                        perItemUri,
+                        Size(300, 300),
+                        null
+                    )
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
                 val music = Music(
                     album = album,
+                    albumArt = thumbnail,
                     artist = artist,
                     duration = duration,
                     id = id,
