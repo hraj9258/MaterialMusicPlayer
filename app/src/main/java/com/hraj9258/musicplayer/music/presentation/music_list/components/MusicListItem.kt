@@ -1,6 +1,5 @@
 package com.hraj9258.musicplayer.music.presentation.music_list.components
 
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -8,8 +7,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.MusicNote
 import androidx.compose.material3.Icon
@@ -18,12 +20,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewDynamicColors
+import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.hraj9258.musicplayer.music.presentation.models.MusicUI
 import com.hraj9258.musicplayer.core.presentation.ui.theme.MusicPlayerTheme
-import com.hraj9258.musicplayer.core.presentation.ui.theme.balooBhai
+import androidx.core.net.toUri
 
 @Composable
 fun MusicListItem(
@@ -34,7 +40,7 @@ fun MusicListItem(
     Row(
         modifier = modifier
             .clickable(onClick = onClick)
-            .padding(16.dp),
+            .padding(horizontal = 8.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -42,13 +48,19 @@ fun MusicListItem(
             Image(
                 bitmap = musicUi.albumArt,
                 contentDescription = musicUi.title,
-                modifier = Modifier.size(42.dp)
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .height(44.dp)
+                    .width(56.dp)
+                    .clip(RoundedCornerShape(4.dp))
             )
         } else {
             Icon(
                 imageVector = Icons.TwoTone.MusicNote,
                 contentDescription = "Music Note",
-                modifier = Modifier.size(42.dp)
+                modifier = Modifier
+                    .height(44.dp)
+                    .width(56.dp)
             )
         }
         Column(
@@ -56,8 +68,7 @@ fun MusicListItem(
         ) {
             Text(
                 text = musicUi.title,
-                fontFamily = balooBhai,
-                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 2,
                 modifier = Modifier
@@ -65,8 +76,6 @@ fun MusicListItem(
             )
             Text(
                 text = musicUi.artist,
-                fontFamily = balooBhai,
-                fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
@@ -74,6 +83,8 @@ fun MusicListItem(
     }
 }
 
+@PreviewFontScale
+@PreviewDynamicColors
 @PreviewLightDark
 @Composable
 private fun SongListItemPreview(
@@ -88,9 +99,7 @@ private fun SongListItemPreview(
                 )
         )
     }
-
 }
-
 
 
 internal val previewMusicUI = MusicUI(
@@ -99,5 +108,5 @@ internal val previewMusicUI = MusicUI(
     duration = "30000",
     id = 0,
     title = "Song Title",
-    path = Uri.parse("")
+    path = "".toUri()
 )
