@@ -18,6 +18,7 @@ class PlaybackService : MediaSessionService() {
     override fun onCreate() {
         super.onCreate()
         val player = ExoPlayer.Builder(this).build()
+        player.repeatMode = Player.REPEAT_MODE_ALL
         mediaSession = MediaSession.Builder(this, player)
             .setCallback(MyMediaSessionCallback())
             .build()
